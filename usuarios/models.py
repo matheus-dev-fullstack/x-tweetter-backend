@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.hashers import make_password
 
 # Create your models here.
 class Usuario(models.Model):
@@ -14,5 +15,5 @@ class Usuario(models.Model):
             self.password = make_password(self.password)  # Gera o hash da senha
         super().save(*args, **kwargs)
         
-        def __str__(self):
-            return self.nome
+    def __str__(self):
+        return f'{self.name} - {self.username}'
