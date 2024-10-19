@@ -3,7 +3,7 @@ from posts.models import Post, Imagem, Like, Comentarios
 from posts.serializers import PostSerializer, ImagemSerializer, LikeSerializer, CommentSerializer
 
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all().order_by('-released')
+    queryset = Post.objects.select_related('author').all().order_by('-released')
     serializer_class = PostSerializer
     
 class ImagemViewSet(viewsets.ModelViewSet):

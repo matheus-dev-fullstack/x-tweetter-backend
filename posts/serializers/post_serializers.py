@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from posts.models import Post, Imagem, Like, Comentarios
+from usuarios.serializers import UsuarioSerializer
+
 
 class ImagemSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,10 +20,10 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ['id', 'post', 'author', 'content', 'created_at']
         
 class PostSerializer(serializers.ModelSerializer):
+    author = UsuarioSerializer()
     imagens = ImagemSerializer(many=True)
     likes = LikeSerializer(many=True)
-    # comentarios = CommentSerializer(many=True)
-    
+    comentarios = CommentSerializer(many=True)
     class Meta:
         model = Post
         # fields = ['id', 'content', 'released', 'author', 'imagens', 'likes', 'comentarios']
