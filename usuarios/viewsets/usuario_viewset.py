@@ -12,13 +12,13 @@ from django.contrib.auth import authenticate
 
 
 class UsuarioViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
     
     
     
 # class LoginViewSet(viewsets.ViewSet):
-#     permission_classes = [AllowAny]
 
 #     @action(detail=False, methods=['post'])
 #     def authenticate(self, request):

@@ -8,6 +8,7 @@ class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
     parser_classes = (MultiPartParser, FormParser) 
+    
     def get_queryset(self):
         # return Post.objects.select_related('author').all().order_by('-released')
         return Post.objects.prefetch_related('imagens', 'likes', 'comentarios').select_related('author').all().order_by('-released')
