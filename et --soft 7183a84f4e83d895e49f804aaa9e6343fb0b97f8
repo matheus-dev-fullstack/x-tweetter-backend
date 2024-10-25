@@ -1,0 +1,89 @@
+[33mcommit 7183a84f4e83d895e49f804aaa9e6343fb0b97f8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Matheus Gabriel de Oliveira <matheus.oliveira@usaflex.com.br>
+Date:   Thu Oct 24 19:25:25 2024 -0300
+
+    Ajustando criação de Post sem imagem
+
+[33mcommit 00c60964d0276b5657270159aef55d65b9988e30[m
+Author: Matheus Oliveira <matheus178541@gmail.com>
+Date:   Tue Oct 22 07:38:23 2024 -0300
+
+    Alterando allowed hosts
+
+[33mcommit a8924805943873f6d16876f261ff5e8bb9e17d42[m
+Author: Matheus Oliveira <matheuseu41@gmail.com>
+Date:   Mon Oct 21 21:51:39 2024 -0300
+
+    Adicioando ulr do PythonAnyWhere no ALLOWED HOSTS
+
+[33mcommit 6804745dde43873681d0e12efa77fcc8d183f7b4[m
+Author: Matheus Oliveira <matheuseu41@gmail.com>
+Date:   Mon Oct 21 21:43:24 2024 -0300
+
+    Configurando poetry e pyproject
+
+[33mcommit a5eed4c5fe777905b2eb1e18461d6d9fa73537b0[m
+Author: Matheus Oliveira <matheuseu41@gmail.com>
+Date:   Mon Oct 21 21:40:00 2024 -0300
+
+    Configurando poetry e pyproject
+
+[33mcommit 2e738bc5fc5f5e533a50a4cf1f906b0053ce66ef[m
+Author: Matheus Oliveira <matheuseu41@gmail.com>
+Date:   Mon Oct 21 21:37:39 2024 -0300
+
+    Configurando poetry e pyproject
+
+[33mcommit cc98af003797c466ffef3dbcce6dabdac59af092[m
+Author: Matheus Oliveira <matheuseu41@gmail.com>
+Date:   Mon Oct 21 21:12:52 2024 -0300
+
+    Ajustando dependências
+
+[33mcommit caa53ac0d228c37334730dfcf86a56b0a212f88b[m
+Author: Matheus Oliveira <matheuseu41@gmail.com>
+Date:   Sun Oct 20 22:38:28 2024 -0300
+
+    Implementando autenticação rest_framework_simplwJWT
+
+[33mcommit cc28dd398f268a229b4d2fc3db443a47fe978e70[m
+Author: Matheus Oliveira <matheuseu41@gmail.com>
+Date:   Sat Oct 19 12:33:22 2024 -0300
+
+    Iniciando configuração do GitHub Actions
+
+[33mcommit 6af31ad1a7256d14c3507c0b7d4e6dd9361d6934[m
+Author: Matheus Oliveira <matheuseu41@gmail.com>
+Date:   Sat Oct 19 11:56:42 2024 -0300
+
+    Implementando correção no arquivo de URLS de tweetter para disponibilizar as imagens no front end
+
+[33mcommit 74ce228459e79e3e11af3600d8232d46e7be5de5[m
+Author: Matheus Oliveira <matheuseu41@gmail.com>
+Date:   Sat Oct 19 11:33:03 2024 -0300
+
+    Configurando VIewSets e Serializes do app Usuarios
+
+[33mcommit c0056fba16dc6cd84df0a92ba81bb8897f89186f[m
+Author: Matheus Oliveira <matheuseu41@gmail.com>
+Date:   Wed Oct 16 20:45:47 2024 -0300
+
+    Implementando django-cors-headers para funcionarem as rotas no front end em React
+
+[33mcommit d90acdb6eb44bce9fa75d3b5737c410fc43b845d[m
+Author: Matheus Oliveira <matheuseu41@gmail.com>
+Date:   Tue Oct 15 22:41:41 2024 -0300
+
+    Confgurando Viewsets e Serializers
+
+[33mcommit 15516f432ed574c98ad1f4db69de81cb4dc678bd[m
+Author: Matheus Oliveira <matheuseu41@gmail.com>
+Date:   Tue Oct 15 20:49:55 2024 -0300
+
+    Definindo models para Usuários e Posts e gerando requirements.txt
+
+[33mcommit ac62822baa9c9e921537a05666e7dce0dffd17cc[m
+Author: Matheus Oliveira <matheuseu41@gmail.com>
+Date:   Tue Oct 15 19:53:11 2024 -0300
+
+    Commit Inicial

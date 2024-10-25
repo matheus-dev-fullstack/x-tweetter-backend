@@ -1,20 +1,33 @@
 from rest_framework import viewsets,status
 from posts.models import  Usuario
-from posts.serializers import UsuarioSerializer
-from usuarios.serializers import  LoginTokenSerializer
+# from posts.serializers import RegisterSerializer
+from usuarios.serializers import  LoginTokenSerializer, PerfilSerializer
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import action
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
+from rest_framework.permissions import IsAuthenticated
+from usuarios.serializers.usuario_serializers import RegisterSerializer
 
 
 
 
-class UsuarioViewSet(viewsets.ModelViewSet):
+class PerfilViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = PerfilSerializer
+    
+    def get_queryset(self):
+        return Usuario.objects.filter(id=self.request.user.id)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.request.user
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+class RegisterViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     queryset = Usuario.objects.all()
-    serializer_class = UsuarioSerializer
+    serializer_class = RegisterSerializer
     
     
     

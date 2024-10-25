@@ -1,7 +1,7 @@
 from django.forms import ValidationError
 from rest_framework import serializers
 from posts.models import Post, Imagem, Like, Comentarios
-from usuarios.serializers import UsuarioSerializer
+from usuarios.serializers import PerfilSerializer
 
 
 class ImagemSerializer(serializers.ModelSerializer):
@@ -21,7 +21,7 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ['id', 'post', 'author', 'content', 'created_at']
         
 class PostSerializer(serializers.ModelSerializer):
-    author = UsuarioSerializer(read_only=True)
+    author = PerfilSerializer(read_only=True)
     # imagens = ImagemSerializer(many=True)
     likes = LikeSerializer(many=True, read_only=True)
     comentarios = CommentSerializer(many=True, read_only=True)

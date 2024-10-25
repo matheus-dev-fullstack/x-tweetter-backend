@@ -4,10 +4,13 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+class PerfilSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = ['id', 'name', 'username', 'perfilPhoto']
 
-class UsuarioSerializer(serializers.ModelSerializer):
+class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)  # Define que o campo password é de escrita, não será retornado na resposta
-
     class Meta:
         model = Usuario
         fields = [ 'id','name', 'username', 'perfilPhoto', 'password']
