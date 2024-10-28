@@ -23,13 +23,17 @@ class CommentSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     author = PerfilSerializer(read_only=True)
     # imagens = ImagemSerializer(many=True)
-    likes = LikeSerializer(many=True, read_only=True)
-    comentarios = CommentSerializer(many=True, read_only=True)
+    likes = serializers.SerializerMethodField()
+    comentarios = serializers.SerializerMethodField()
     class Meta:
         model = Post
         fields = ['id', 'content', 'released', 'author', 'likes', 'comentarios']
-        # fields = ['id', 'content', 'released', 'author', 'imagens', 'likes', 'comentarios']
-        # fields = ['id', 'content', 'released', 'author', 'imagens', 'likes', 'comentarios']
+        
+    def get_likes(self, obj):
+        return Like.objects.filter(post=obj).count()
+    
+    def get_comentarios(self, obj):
+        return Comentarios.objects.filter(post=obj).count()
         
     def create(self, validated_data):
         request = self.context.get('request')
@@ -45,6 +49,15 @@ class PostSerializer(serializers.ModelSerializer):
         #     Imagem.objects.create(post=post, **image_data)
         
         return post
+    def add_like(self, post, user):
+        if not Like.objects.filter(post=post, user=user).exists():
+            Like.objects.create(post=post, user=user)
+
+    def remove_like(self, post, user):
+        Like.objects.filter(post=post, user=user).delete()
+
+    def add_comment(self, post, user, content):
+        return Comentarios.objects.create(post=post, author=user, content=content)
 
 class PostSummarySerializer(serializers.ModelSerializer):
     # likes_count = serializers.IntegerField(source='likes.count', read_only=True)

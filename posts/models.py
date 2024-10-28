@@ -6,6 +6,9 @@ class Post(models.Model):
     author = models.ForeignKey(Usuario,  on_delete=models.CASCADE)
     released = models.DateTimeField(auto_now_add=True)
     
+    def __str__(self):
+        return f'{self.author} liked {self.content}'
+    
 class Imagem(models.Model):
     image = models.ImageField(upload_to='imagem_post')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='imagens')
