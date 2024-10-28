@@ -30,7 +30,7 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ['id', 'content', 'released', 'author', 'likes', 'comentarios']
         
     def get_likes(self, obj):
-        return Like.objects.filter(post=obj).count()
+        return [like.user.id for like in obj.likes.all()]
     
     def get_comentarios(self, obj):
         return Comentarios.objects.filter(post=obj).count()

@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from rest_framework import viewsets, status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from posts.models import Post, Imagem, Like, Comentarios
 from posts.serializers import PostSerializer, ImagemSerializer, LikeSerializer, CommentSerializer
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -9,6 +9,7 @@ from rest_framework.decorators import action
 
 class PostViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
+    # permission_classes = [AllowAny]
     serializer_class = PostSerializer
     parser_classes = (MultiPartParser, FormParser) 
     
@@ -22,7 +23,7 @@ class PostViewSet(viewsets.ModelViewSet):
         user = request.user
         
         if Like.objects.filter(post=post, user=user).exists():
-            Like.object.filter(post=post, user=user).delete()
+            Like.objects.filter(post=post, user=user).delete()
             return Response({'status': 'like removido'}, status=status.HTTP_204_NO_CONTENT)
         else:
             Like.objects.create(post=post, user=user)
