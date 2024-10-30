@@ -1,6 +1,6 @@
 from django.forms import ValidationError
 from rest_framework import serializers
-from posts.models import Post, Imagem, Like, Comentarios
+from posts.models import Post, Imagem, Like, Comentario
 from usuarios.serializers import PerfilSerializer
 
 
@@ -17,8 +17,15 @@ class LikeSerializer(serializers.ModelSerializer):
         
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Comentarios
-        fields = ['id', 'post', 'author', 'content', 'created_at']
+        model = Comentario
+        fields = ['content', 'post', 'author', 'created_at']
+        read_only_fields = [ 'post', 'author', 'created_at']
+
+        def create(self, validated_data):
+            post = validated_data.pop('post', None)
+            author = validated_data.pop('author', None)
+            comentario = Comentario.objects.create(post=post, author=author, **validated_data)
+            return comentario
         
 class PostSerializer(serializers.ModelSerializer):
     author = PerfilSerializer(read_only=True)
@@ -33,7 +40,7 @@ class PostSerializer(serializers.ModelSerializer):
         return [like.user.id for like in obj.likes.all()]
     
     def get_comentarios(self, obj):
-        return Comentarios.objects.filter(post=obj).count()
+        return Comentario.objects.filter(post=obj).count()
         
     def create(self, validated_data):
         request = self.context.get('request')
@@ -49,15 +56,9 @@ class PostSerializer(serializers.ModelSerializer):
         #     Imagem.objects.create(post=post, **image_data)
         
         return post
-    def add_like(self, post, user):
-        if not Like.objects.filter(post=post, user=user).exists():
-            Like.objects.create(post=post, user=user)
 
-    def remove_like(self, post, user):
-        Like.objects.filter(post=post, user=user).delete()
-
-    def add_comment(self, post, user, content):
-        return Comentarios.objects.create(post=post, author=user, content=content)
+    # def add_comment(self, post, user, content):
+    #     return Comentario.objects.create(post=post, author=user, content=content)
 
 class PostSummarySerializer(serializers.ModelSerializer):
     # likes_count = serializers.IntegerField(source='likes.count', read_only=True)

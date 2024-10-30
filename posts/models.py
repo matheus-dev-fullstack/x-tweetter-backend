@@ -22,7 +22,7 @@ class Like(models.Model):
         return f'{self.user.name} liked {self.post.id}'
 
 
-class Comentarios(models.Model):
+class Comentario(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comentarios')
     author = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     content = models.TextField(max_length=280)
