@@ -8,8 +8,8 @@ from rest_framework.decorators import action
 
 
 class PostViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    # permission_classes = [AllowAny]
+    # permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     serializer_class = PostSerializer
     parser_classes = (JSONParser, MultiPartParser, FormParser)
         
