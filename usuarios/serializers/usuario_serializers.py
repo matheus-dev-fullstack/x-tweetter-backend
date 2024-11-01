@@ -7,14 +7,15 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 class PerfilSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['id', 'name', 'username', 'perfilPhoto']
+        fields = ['id', 'name', 'username']
+        # fields = ['id', 'name', 'username', 'perfilPhoto']
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)  # Define que o campo password é de escrita, não será retornado na resposta
     class Meta:
         model = Usuario
-        fields = [ 'id','name', 'username', 'perfilPhoto', 'password']
-        # fields = [ 'id','name', 'username',  'password']
+        # fields = [ 'id','name', 'username', 'perfilPhoto', 'password']
+        fields = [ 'id','name', 'username',  'password']
     
     def create(self, validated_data):
         password = validated_data.pop('password', None)
