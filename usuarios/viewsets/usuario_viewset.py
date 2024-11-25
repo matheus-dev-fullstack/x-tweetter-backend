@@ -14,7 +14,8 @@ from usuarios.serializers.usuario_serializers import RegisterSerializer
 
 
 class PerfilViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     serializer_class = PerfilSerializer
     
     def get_queryset(self):
@@ -24,6 +25,7 @@ class PerfilViewSet(viewsets.ModelViewSet):
         instance = self.request.user
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+    
 class RegisterViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     queryset = Usuario.objects.all()

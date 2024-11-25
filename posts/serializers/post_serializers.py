@@ -35,7 +35,8 @@ class PostSerializer(serializers.ModelSerializer):
     comentarios = serializers.SerializerMethodField()
     class Meta:
         model = Post
-        fields = ['id', 'content', 'released', 'author', 'likes', 'comentarios', 'perfilPhoto']
+        fields = ['id', 'content', 'released', 'author', 'likes', 'comentarios']
+        # fields = ['id', 'content', 'released', 'author', 'likes', 'comentarios', 'perfilPhoto']
         
     def get_likes(self, obj):
         return [like.user.id for like in obj.likes.all()]
