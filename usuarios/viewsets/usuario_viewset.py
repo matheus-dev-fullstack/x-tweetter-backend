@@ -16,11 +16,16 @@ from usuarios.serializers.usuario_serializers import RegisterSerializer
 class PerfilViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticated]
     permission_classes = [AllowAny]
+    queryset = Usuario.objects.all()
     serializer_class = PerfilSerializer
     
-    def get_queryset(self):
-        return Usuario.objects.all()
-        # return Usuario.objects.filter(id=self.request.user.id)
+    def list(self, request, *args, **kwargs):
+        user = request.user
+        serializer = self.get_serializer(user)
+        return Response(serializer.data)
+    
+    # def get_queryset(self):
+    #     return Usuario.objects.all()
 
 class RegisterViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
