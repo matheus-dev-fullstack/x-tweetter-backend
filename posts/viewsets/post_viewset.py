@@ -6,6 +6,8 @@ from posts.serializers import PostSerializer, ImagemSerializer, LikeSerializer, 
 from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from rest_framework.decorators import action
 
+from usuarios.models import Usuario
+
 
 class PostViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticated]
@@ -14,8 +16,8 @@ class PostViewSet(viewsets.ModelViewSet):
     parser_classes = (JSONParser, MultiPartParser, FormParser)
         
     def get_queryset(self):
-        # return Post.objects.select_related('author').all().order_by('-released')
-        return Post.objects.prefetch_related('imagens', 'likes', 'comentarios').select_related('author').all().order_by('-released')
+        return Usuario.objects.filter(id=self.request.user.id)        # return Post.objects.select_related('author').all().order_by('-released')
+        # return Post.objects.prefetch_related('imagens', 'likes', 'comentarios').select_related('author').all().order_by('-released')
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def like(self, request, pk=None):

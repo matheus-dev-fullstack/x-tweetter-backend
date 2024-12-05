@@ -19,13 +19,9 @@ class PerfilViewSet(viewsets.ModelViewSet):
     serializer_class = PerfilSerializer
     
     def get_queryset(self):
-        return Usuario.objects.filter(id=self.request.user.id)
+        return Usuario.objects.all()
+        # return Usuario.objects.filter(id=self.request.user.id)
 
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.request.user
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
-    
 class RegisterViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     queryset = Usuario.objects.all()

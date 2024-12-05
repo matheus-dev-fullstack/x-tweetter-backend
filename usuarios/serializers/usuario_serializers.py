@@ -8,8 +8,8 @@ class PerfilSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         # fields = '__all__'
-        fields = ['date_joined', 'name', 'username', 'about']
-        # fields = ['id', 'name', 'username', 'perfilPhoto']
+        # fields = ['id','date_joined', 'name', 'username', 'about']
+        fields = ['id', 'name', 'username', 'about']
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)  # Define que o campo password é de escrita, não será retornado na resposta
