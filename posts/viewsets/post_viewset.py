@@ -5,7 +5,9 @@ from posts.models import Post, Imagem, Like, Comentario
 from posts.serializers import PostSerializer, ImagemSerializer, LikeSerializer, CommentSerializer
 from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from rest_framework.decorators import action
-
+import os
+from PIL import Image
+from django.conf import settings
 from usuarios.models import Usuario
 
 
@@ -16,8 +18,26 @@ class PostViewSet(viewsets.ModelViewSet):
     parser_classes = (JSONParser, MultiPartParser, FormParser)
         
     def get_queryset(self):
-        return Usuario.objects.filter(id=self.request.user.id)        # return Post.objects.select_related('author').all().order_by('-released')
+        # return Usuario.objects.filter(id=self.request.user.id)        # return Post.objects.select_related('author').all().order_by('-released')
         # return Post.objects.prefetch_related('imagens', 'likes', 'comentarios').select_related('author').all().order_by('-released')
+        return Post.objects.prefetch_related('imagens', 'likes', 'comentarios').select_related('author').all().order_by('-released')
+
+    def perform_create(self, serializer):
+        imagem = self.request.FILES.get('imagem')
+        post = serializer.save(author=self.request.user)
+
+        if imagem:
+            img = Image.open(imagem)
+            img = img.convert('RGB')  # Garante que está no formato RGB
+            img.thumbnail((800, 800))  # Reduz o tamanho
+            temp_path = os.path.join(settings.MEDIA_ROOT, f"temp_{imagem.name}")
+            img.save(temp_path, format='JPEG', quality=85)
+            
+            with open(temp_path, 'rb') as compacted_image:
+                Imagem.objects.create(post=post, image=compacted_image)
+            
+            os.remove(temp_path)
+
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def like(self, request, pk=None):

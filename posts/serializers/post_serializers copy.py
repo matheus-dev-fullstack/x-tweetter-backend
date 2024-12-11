@@ -7,7 +7,7 @@ from usuarios.serializers import PerfilSerializer
 class ImagemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Imagem
-        # fields = '__all__'
+        fields = '__all__'
         fields = ['id', 'image']
         
 class LikeSerializer(serializers.ModelSerializer):
@@ -29,15 +29,14 @@ class CommentSerializer(serializers.ModelSerializer):
             return comentario
         
 class PostSerializer(serializers.ModelSerializer):
-    # imagens = ImagemSerializer(many=True, required=False)
-    imagem = serializers.ImageField(required=False, allow_null=True)
+    imagens = ImagemSerializer(many=True, required=False)
     
     author = PerfilSerializer(read_only=True)
     likes = serializers.SerializerMethodField()
     comentarios = serializers.SerializerMethodField()
     class Meta:
         model = Post
-        fields = ['id', 'content', 'released', 'author', 'likes', 'comentarios', 'imagem']
+        fields = ['id', 'content', 'released', 'author', 'likes', 'comentarios', 'imagens']
         # fields = ['id', 'content', 'released', 'author', 'likes', 'comentarios', 'perfilPhoto']
         
     def get_likes(self, obj):
@@ -60,11 +59,11 @@ class PostSerializer(serializers.ModelSerializer):
         if user is None or not user.is_authenticated:
             raise ValidationError("Usuário não autenticado. O post não pode ser criado.")
         
-        imagem = validated_data.pop('imagem', None)
+        imagens_data = validated_data.pop('imagens', [])
         post = Post.objects.create(author=user, **validated_data)
         
-        if imagem:
-            Imagem.objects.create(post=post, image=imagem)
+        for image_data in imagens_data:
+            Imagem.objects.create(post=post, **image_data)
         
         return post
 
