@@ -27,20 +27,3 @@ class Comentario(models.Model):
 
     def __str__(self):
         return f'{self.author.name} commented on {self.post.id}'
-    
-class Imagem(models.Model):
-    post = models.ForeignKey(Post, related_name='imagens', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='post_images/')
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-    # def save(self, *args, **kwargs):
-    #     super().save(*args, **kwargs)
-
-    #     img_path = self.image.path
-
-    #     img = Image.open(img_path)
-
-    #     img = img.convert('RGB')  # Garantir formato RGB
-    #     img.thumbnail((800, 800))  # Reduzir dimensões, se necessário
-
-    #     # Sobrescrever o arquivo com a versão compactada
-    #     img.save(img_path, format='JPEG', quality=85)  # Ajustar qualidade

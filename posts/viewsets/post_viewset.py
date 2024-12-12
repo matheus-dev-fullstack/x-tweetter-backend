@@ -1,8 +1,9 @@
+from django.forms import ValidationError
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from posts.models import Post, Imagem, Like, Comentario
-from posts.serializers import PostSerializer, ImagemSerializer, LikeSerializer, CommentSerializer
+from posts.models import Post, Like, Comentario
+from posts.serializers import PostSerializer, LikeSerializer, CommentSerializer
 from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from rest_framework.decorators import action
 import os
@@ -15,28 +16,17 @@ class PostViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticated]
     permission_classes = [AllowAny]
     serializer_class = PostSerializer
-    parser_classes = (JSONParser, MultiPartParser, FormParser)
+    queryset = Post.objects.all().order_by('-released')
+    # parser_classes = (JSONParser, MultiPartParser, FormParser)
         
-    def get_queryset(self):
+    # def get_queryset(self):
         # return Usuario.objects.filter(id=self.request.user.id)        # return Post.objects.select_related('author').all().order_by('-released')
         # return Post.objects.prefetch_related('imagens', 'likes', 'comentarios').select_related('author').all().order_by('-released')
-        return Post.objects.prefetch_related('imagens', 'likes', 'comentarios').select_related('author').all().order_by('-released')
+        # return Post.objects.prefetch_related('imagem', 'likes', 'comentarios').select_related('author').all().order_by('-released')
 
     def perform_create(self, serializer):
-        imagem = self.request.FILES.get('imagem')
+        # imagem = self.request.FILES.get('imagem')
         post = serializer.save(author=self.request.user)
-
-        if imagem:
-            img = Image.open(imagem)
-            img = img.convert('RGB')  # Garante que está no formato RGB
-            img.thumbnail((800, 800))  # Reduz o tamanho
-            temp_path = os.path.join(settings.MEDIA_ROOT, f"temp_{imagem.name}")
-            img.save(temp_path, format='JPEG', quality=85)
-            
-            with open(temp_path, 'rb') as compacted_image:
-                Imagem.objects.create(post=post, image=compacted_image)
-            
-            os.remove(temp_path)
 
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
@@ -45,11 +35,10 @@ class PostViewSet(viewsets.ModelViewSet):
         user = request.user
         
         if Like.objects.filter(post=post, user=user).exists():
-            Like.objects.filter(post=post, user=user).delete()
-            return Response({'status': 'like removido'}, status=status.HTTP_204_NO_CONTENT)
-        else:
-            Like.objects.create(post=post, user=user)
-            return Response({'status': 'like adicionado'}, status=status.HTTP_201_CREATED)
+            return Response({"detail": "Você já curtiu este post."}, status=400)
+        
+        Like.objects.create(post=post, user=user)
+        return Response({'status': 'like adicionado'}, status=status.HTTP_201_CREATED)
         
     @action(detail=True, methods=['post'], permission_classes=[AllowAny])
     def comment(self, request, pk=None):
@@ -62,23 +51,6 @@ class PostViewSet(viewsets.ModelViewSet):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-    # @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
-    # def comment(self, request, pk=None):
-    #     post = self.get_object()
-    #     content = request.data.get('content')
-    #     user = request.user
-        
-    #     if content:
-    #         Comentarios.objects.create(post=post, author=user, content=content)
-    #         return Response({'status': 'comentario adicionado'}, status=status.HTTP_201_CREATED)
-    #     else:
-    #         return Response({'status': 'comentário vazio'}, status=status.HTTP_400_BAD_REQUEST)
-    
-class ImagemViewSet(viewsets.ModelViewSet):
-    queryset = Imagem.objects.all()
-    serializer_class = ImagemSerializer
-    permission_classes = [IsAuthenticated]
-    
 class LikeViewSet(viewsets.ModelViewSet):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
@@ -91,6 +63,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         post_id = self.request.data.get('post')
+        
         try:
             post = Post.objects.get(id=post_id)
         except Post.DoesNotExist:
