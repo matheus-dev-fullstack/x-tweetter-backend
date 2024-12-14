@@ -7,14 +7,14 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 class PerfilSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['date_joined', 'name', 'username', 'about']
+        fields = ['date_joined', 'name', 'username', 'about', 'photo', 'banner']
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)  
     class Meta:
         model = Usuario
         # fields = [ 'id','name', 'username', 'perfilPhoto', 'password']
-        fields = [ 'id','name', 'username',  'password', 'photo']
+        fields = [ 'id','name', 'username',  'password', 'photo', 'banner']
     
     def create(self, validated_data):
         password = validated_data.pop('password', None)
@@ -34,6 +34,14 @@ class RegisterSerializer(serializers.ModelSerializer):
             max_size = (700, 700)
             img.thumbnail(max_size, Image.Resampling.LANCZOS)
             img.save(perfil.photo.path)
+            
+        if perfil.banner:
+            from PIL import Image
+
+            img = Image.open(perfil.banner.path)
+            max_size = (600, 200)
+            img.thumbnail(max_size, Image.Resampling.LANCZOS)
+            img.save(perfil.banner.path)
             
         return perfil
         

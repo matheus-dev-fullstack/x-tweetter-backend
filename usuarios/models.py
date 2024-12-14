@@ -11,6 +11,7 @@ class Usuario(AbstractUser):
     isVerified = models.BooleanField(default=False)
     about = models.TextField(max_length=200, blank=True)
     photo = models.ImageField(upload_to='perfilPhoto', blank=True, null=True)
+    banner = models.ImageField(upload_to='bannerPhoto', blank=True, null=True)
     
     def save(self, *args, **kwargs):
         if not self.password.startswith('pbkdf2_'):  # Verifica se já é um hash
