@@ -2,6 +2,8 @@ from django.forms import ValidationError
 from rest_framework import serializers
 from posts.models import Post, Like, Comentario
 from usuarios.serializers import PerfilSerializer
+from PIL import Image
+
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -49,10 +51,8 @@ class PostSerializer(serializers.ModelSerializer):
         post = super().create(validated_data)
 
         if post.imagem:
-            from PIL import Image
-
             img = Image.open(post.imagem.path)
-            max_size = (800, 800)
+            max_size = (700, 700)
             img.thumbnail(max_size, Image.Resampling.LANCZOS)
             img.save(post.imagem.path)
 

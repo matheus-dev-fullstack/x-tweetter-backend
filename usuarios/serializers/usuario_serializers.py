@@ -10,11 +10,11 @@ class PerfilSerializer(serializers.ModelSerializer):
         fields = ['date_joined', 'name', 'username', 'about']
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)  # Define que o campo password é de escrita, não será retornado na resposta
+    password = serializers.CharField(write_only=True)  
     class Meta:
         model = Usuario
         # fields = [ 'id','name', 'username', 'perfilPhoto', 'password']
-        fields = [ 'id','name', 'username',  'password']
+        fields = [ 'id','name', 'username',  'password', 'photo']
     
     def create(self, validated_data):
         password = validated_data.pop('password', None)
@@ -25,7 +25,17 @@ class RegisterSerializer(serializers.ModelSerializer):
         if password:
             validated_data['password'] = make_password(password)
 
-        return super().create(validated_data)
+        perfil = super().create(validated_data)
+        
+        if perfil.photo:
+            from PIL import Image
+
+            img = Image.open(perfil.photo.path)
+            max_size = (700, 700)
+            img.thumbnail(max_size, Image.Resampling.LANCZOS)
+            img.save(perfil.photo.path)
+            
+        return perfil
         
 
     

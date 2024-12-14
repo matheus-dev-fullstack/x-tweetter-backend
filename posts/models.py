@@ -9,7 +9,7 @@ class Post(models.Model):
     released = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return f'{self.author} liked {self.content}'
+        return f'{self.author} postou {self.content}'
     
 class Like(models.Model):
     user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
