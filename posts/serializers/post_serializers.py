@@ -53,7 +53,7 @@ class PostSerializer(serializers.ModelSerializer):
 
             img = Image.open(post.imagem.path)
             max_size = (800, 800)
-            img.thumbnail(max_size, Image.ANTIALIAS)
+            img.thumbnail(max_size, Image.Resampling.LANCZOS)
             img.save(post.imagem.path)
 
         return post
