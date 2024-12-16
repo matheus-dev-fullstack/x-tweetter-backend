@@ -18,17 +18,24 @@ class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     queryset = Post.objects.all().order_by('-released')
     # parser_classes = (JSONParser, MultiPartParser, FormParser)
-        
-    # def get_queryset(self):
-        # return Usuario.objects.filter(id=self.request.user.id)        # return Post.objects.select_related('author').all().order_by('-released')
-        # return Post.objects.prefetch_related('imagens', 'likes', 'comentarios').select_related('author').all().order_by('-released')
-        # return Post.objects.prefetch_related('imagem', 'likes', 'comentarios').select_related('author').all().order_by('-released')
+
+
 
     def perform_create(self, serializer):
         # imagem = self.request.FILES.get('imagem')
         post = serializer.save(author=self.request.user)
+        
+    @action(detail=False, methods=['get'], url_path='user-posts/(?P<username>[^/.]+)', permission_classes=[AllowAny])
+    def user_posts(self, request, username=None):
+        try:
+            user = Usuario.objects.get(username=username)
+        except Usuario.DoesNotExist:
+            return Response({"detail": "Usuário não encontrado."}, status=status.HTTP_404_NOT_FOUND)
 
-
+        posts = Post.objects.filter(author=user).order_by('-released')
+        serializer = self.get_serializer(posts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def like(self, request, pk=None):
         post = self.get_object()

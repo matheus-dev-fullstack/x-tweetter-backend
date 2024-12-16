@@ -10,9 +10,6 @@ from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 from usuarios.serializers.usuario_serializers import RegisterSerializer
 
-
-
-
 class PerfilViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticated]
     permission_classes = [AllowAny]
