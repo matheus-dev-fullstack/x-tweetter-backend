@@ -27,6 +27,45 @@ class PerfilViewSet(viewsets.ModelViewSet):
         user = get_object_or_404(Usuario, username=username)
         serializer = self.get_serializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=['post'], permission_classes=[AllowAny])
+    def follow(self, request, pk=None):
+        user_to_follow = get_object_or_404(Usuario, pk=pk)
+        user = request.user
+
+        if user == user_to_follow:
+            return Response({"message": "Você não pode seguir a si mesmo."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if user_to_follow.followers.filter(id=user.id).exists():
+            return Response({"message": "Você já está seguindo este usuário."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user_to_follow.followers.add(user)
+        return Response({"message": f"Agora você está seguindo {user_to_follow.username}."}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    def unfollow(self, request, pk=None):
+        user_to_unfollow = get_object_or_404(Usuario, pk=pk)
+        user = request.user
+
+        if user_to_unfollow.followers.filter(id=user.id).exists():
+            user_to_unfollow.followers.remove(user)
+            return Response({"message": f"Você deixou de seguir {user_to_unfollow.username}."}, status=status.HTTP_200_OK)
+        
+        return Response({"message": "Você não está seguindo este usuário."}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['get'], permission_classes=[AllowAny])
+    def followers(self, request, pk=None):
+        user = get_object_or_404(Usuario, pk=pk)
+        followers = user.followers.all()
+        serializer = self.get_serializer(followers, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['get'], permission_classes=[AllowAny])
+    def following(self, request, pk=None):
+        user = get_object_or_404(Usuario, pk=pk)
+        following = user.following.all()
+        serializer = self.get_serializer(following, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class RegisterViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]

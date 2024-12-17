@@ -12,6 +12,12 @@ class Usuario(AbstractUser):
     about = models.TextField(max_length=200, blank=True)
     photo = models.ImageField(upload_to='perfilPhoto', blank=True, null=True)
     banner = models.ImageField(upload_to='bannerPhoto', blank=True, null=True)
+    followers = models.ManyToManyField(
+        'self', 
+        symmetrical=False, 
+        related_name='following',
+        blank=True
+    )
     
     def save(self, *args, **kwargs):
         if not self.password.startswith('pbkdf2_'):  # Verifica se já é um hash
