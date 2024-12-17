@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets,status
 from posts.models import  Usuario
 # from posts.serializers import RegisterSerializer
@@ -21,8 +22,11 @@ class PerfilViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(user)
         return Response(serializer.data)
     
-    # def get_queryset(self):
-    #     return Usuario.objects.all()
+    @action(detail=False, methods=['get'], url_path='overview/(?P<username>[^/.]+)')
+    def perfil_overview(self, request, username=None):
+        user = get_object_or_404(Usuario, username=username)
+        serializer = self.get_serializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class RegisterViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
