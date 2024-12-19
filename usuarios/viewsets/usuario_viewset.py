@@ -22,6 +22,15 @@ class PerfilViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(user)
         return Response(serializer.data)
     
+    @action(detail=False, methods=['put', 'patch'], url_path='editar-perfil', permission_classes=[AllowAny])
+    def editar_perfil(self, request):
+        user = request.user
+        serializer = self.get_serializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Perfil atualizado com sucesso!", "data": serializer.data}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
     @action(detail=False, methods=['get'], url_path='overview/(?P<username>[^/.]+)')
     def perfil_overview(self, request, username=None):
         user = get_object_or_404(Usuario, username=username)
@@ -55,6 +64,7 @@ class PerfilViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'], permission_classes=[AllowAny])
     def followers(self, request, pk=None):
+        
         user = get_object_or_404(Usuario, pk=pk)
         followers = user.followers.all()
         serializer = self.get_serializer(followers, many=True)
