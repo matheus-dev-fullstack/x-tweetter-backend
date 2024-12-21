@@ -1,3 +1,4 @@
+from itertools import count
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets,status
 from posts.models import  Usuario
@@ -10,6 +11,9 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 from usuarios.serializers.usuario_serializers import RegisterSerializer
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.decorators import parser_classes
+from django.db.models import Count
 
 class PerfilViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticated]
@@ -23,13 +27,22 @@ class PerfilViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     
     @action(detail=False, methods=['put', 'patch'], url_path='editar-perfil', permission_classes=[AllowAny])
+    @parser_classes([MultiPartParser, FormParser])
     def editar_perfil(self, request):
         user = request.user
         serializer = self.get_serializer(user, data=request.data, partial=True)
+
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "Perfil atualizado com sucesso!", "data": serializer.data}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({
+                "message": "Perfil atualizado com sucesso!",
+                "data": serializer.data
+            }, status=status.HTTP_200_OK)
+
+        return Response({
+            "message": "Erro ao atualizar perfil.",
+            "errors": serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
     
     @action(detail=False, methods=['get'], url_path='overview/(?P<username>[^/.]+)')
     def perfil_overview(self, request, username=None):
@@ -76,6 +89,15 @@ class PerfilViewSet(viewsets.ModelViewSet):
         following = user.following.all()
         serializer = self.get_serializer(following, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['get'], url_path='top-followed', permission_classes=[AllowAny])
+    def top_followed(self, request):
+        top_users = (
+            Usuario.objects.annotate(followers_count=Count('followers'))
+            .order_by('-followers_count')[:3]
+        )
+        serializer = self.get_serializer(top_users, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class RegisterViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
@@ -94,15 +116,6 @@ class RegisterViewSet(viewsets.ModelViewSet):
             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-# class LoginViewSet(viewsets.ViewSet):
-
-#     @action(detail=False, methods=['post'])
-#     def authenticate(self, request):
-#         serializer = LoginTokenSerializer(data=request.data)
-#         if serializer.is_valid():
-#             user = serializer.validated_data
-#             return Response({"message": "Login bem-sucedido!", "username": user.username}, status=status.HTTP_200_OK)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]

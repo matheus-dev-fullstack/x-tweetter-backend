@@ -25,6 +25,17 @@ class PostViewSet(viewsets.ModelViewSet):
         # imagem = self.request.FILES.get('imagem')
         post = serializer.save(author=self.request.user)
         
+    @action(detail=False, methods=['get'], url_path='following-posts', permission_classes=[AllowAny])
+    def following_posts(self, request):
+        user = request.user
+        
+        following_users = user.following.all()
+        
+        posts = Post.objects.filter(author__in=following_users).order_by('-released')
+        
+        serializer = self.get_serializer(posts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
     @action(detail=False, methods=['get'], url_path='user-posts/(?P<username>[^/.]+)', permission_classes=[AllowAny])
     def user_posts(self, request, username=None):
         try:

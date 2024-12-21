@@ -44,7 +44,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
             return perfil
         except serializers.ValidationError as e:
-            print(f"Erro no serializer: {e.detail}")  # Log detalhado no console
+            print(f"Erro no serializer: {e.detail}")
             raise e
         except Exception as e:
             print(f"Erro inesperado: {str(e)}")  # Log de erros gerais
